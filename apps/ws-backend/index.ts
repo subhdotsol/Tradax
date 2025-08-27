@@ -33,9 +33,7 @@ wss.on('connection', (ws) => {
 });
 
 // Subscribe to Redis 'trades' channel and broadcast to WebSocket clients
-await redisSubscriber.subscribe('trades', (message) => {
-  // ✅ Log the incoming trade message
-  console.log('📩 Incoming trade message from Redis:', message);
+await redisSubscriber.subscribe('candles', (message) => {
 
   // Broadcast to all connected WebSocket clients
   for (const client of clients) {

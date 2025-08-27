@@ -12,7 +12,7 @@ redisPublisher.on('error', (err) => {
 });
 
 async function start() {
-  await redisPublisher.connect(); // <-- Important!
+  await redisPublisher.connect(); 
 
   // Interface of the Binance trade
   interface BinanceTrade {
@@ -32,21 +32,36 @@ async function start() {
   markets.forEach((market) => {
     tradeQueues[market.toUpperCase()] = [];
 
-    const ws = new WebSocket(`wss://stream.binance.com:9443/ws/${market}@trade`);
+    const interval = '1m';
+    const ws = new WebSocket(`wss://stream.binance.com:9443/ws/${market}@kline_${interval}`);
+
 
     ws.onmessage = (event) => {
-      const data = JSON.parse(event.data.toString());
-
-      const symbol = data.s.toUpperCase();
-
-      if (tradeQueues[symbol]) {
-        tradeQueues[symbol].push(data);
+      const message = JSON.parse(event.data.toString());
+    
+      if (message.e !== 'kline') return;
+    
+      const kline = message.k;
+      const symbol = kline.s.toUpperCase();
+    
+      // Only publish closed candles
+      if (kline.x) {
+        const candlestickData = {
+          symbol,
+          interval: kline.i,
+          open: kline.o,
+          high: kline.h,
+          low: kline.l,
+          close: kline.c,
+          volume: kline.v,
+          timestamp: kline.t,
+        };
+    
+        redisPublisher.publish('candles', JSON.stringify(candlestickData));
+        console.log(`📊 Candle ${symbol} [${interval}]:`, candlestickData);
       }
-
-      redisPublisher.publish('trades', JSON.stringify(data));
-
-      console.log(`Trade Data for ${symbol}:`, data);
     };
+    
 
     ws.onopen = () => {
       console.log(`Connected to market ${market}`);

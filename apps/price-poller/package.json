@@ -9,6 +9,9 @@
   "peerDependencies": {
     "typescript": "^5"
   },
+  "scripts": {
+    "dev" : "bun index.ts"
+  },
   "dependencies": {
     "@repo/constants": "*",
     "@types/express": "^5.0.3",

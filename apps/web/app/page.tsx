@@ -4,34 +4,33 @@ import { useEffect } from 'react';
 
 export default function Home() {
   useEffect(() => {
-    const socket = new WebSocket('ws://localhost:8080');
+    const ws = new WebSocket('ws://localhost:8080');
 
-    socket.onopen = () => {
-      console.log('✅ Connected to WebSocket server');
+    ws.onopen = () => {
+      console.log('✅ WebSocket connected');
     };
 
-    socket.onmessage = (event) => {
-      const trade = JSON.parse(event.data);
-      console.log('📈 Live trade data:', trade);
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+
+      // Optional: filter only candle messages
+      if (data?.open && data?.close && data?.high && data?.low) {
+        console.log('📊 New Candle:', data);
+      }
     };
 
-    socket.onerror = (err) => {
+    ws.onerror = (err) => {
       console.error('❌ WebSocket error:', err);
     };
 
-    socket.onclose = () => {
-      console.warn('🔌 WebSocket connection closed');
+    ws.onclose = () => {
+      console.warn('🔌 WebSocket disconnected');
     };
 
     return () => {
-      socket.close();
+      ws.close();
     };
   }, []);
 
-  return (
-    <main>
-      <h1>📊 Live Trade Stream</h1>
-      <p>Open your browser console to see real-time trade data from Binance via WebSocket.</p>
-    </main>
-  );
+  return null; // 👈 No UI rendered
 }

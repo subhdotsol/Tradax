@@ -45,7 +45,7 @@
         "typescript": "5.9.2",
       },
     },
-    "apps/ws": {
+    "apps/ws-backend": {
       "name": "ws",
       "dependencies": {
         "@types/ws": "^8.18.1",
@@ -845,7 +845,7 @@
 
     "wrappy": ["wrappy@1.0.2", "", {}, "sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ=="],
 
-    "ws": ["ws@workspace:apps/ws"],
+    "ws": ["ws@workspace:apps/ws-backend"],
 
     "yocto-queue": ["yocto-queue@0.1.0", "", {}, "sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q=="],
 
